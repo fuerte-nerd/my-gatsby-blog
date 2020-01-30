@@ -5,24 +5,19 @@ import Img from "gatsby-image"
 export default function Template({
   data, // this prop will be injected by the GraphQL query below.
 }) {
-  // const { markdownRemark } = data // data.markdownRemark holds your post data
-  // const { frontmatter, html } = markdownRemark
+  const { post, featured_image } = data
+
   return (
     <div className="blog-post-container">
       <div className="blog-post">
-        <div style={{
-          width: '75%',
-          margin: 'auto'
-        }}>
-          <Img fluid={data.featured_image.childImageSharp.fluid} />
-        </div>
-        
-        <h1>{data.post.frontmatter.title}</h1>
-        <h2>{data.post.frontmatter.date}</h2>
+        <Img fluid={featured_image.childImageSharp.fluid} />
+
+        <h1>{post.frontmatter.title}</h1>
+        <h2>{post.frontmatter.date}</h2>
         <div
           className="blog-post-content"
-          dangerouslySetInnerHTML={{ __html: data.post.html }}
-        /> 
+          dangerouslySetInnerHTML={{ __html: post.html }}
+        />
       </div>
     </div>
   )
@@ -39,7 +34,7 @@ export const pageQuery = graphql`
 
     featured_image: file(relativePath: { eq: $featured_image }) {
       childImageSharp {
-        fluid(maxWidth: 2000) {
+        fluid(maxWidth: 2000, maxHeight: 700) {
           ...GatsbyImageSharpFluid
         }
       }

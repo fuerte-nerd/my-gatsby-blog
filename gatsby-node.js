@@ -2,11 +2,11 @@ const path = require(`path`);
 const { createFilePath } = require("gatsby-source-filesystem");
 const { fmImagesToRelative } = require('gatsby-remark-relative-images');
 
-// The slug (the url) is not exposed to GraphQL by default so we need to pass it through manually.
+// The slug is not exposed to GraphQL by default so we need to pass it through manually.
 exports.onCreateNode = ({ node, actions, getNode }) => {
   const { createNodeField } = actions;
 
-  fmImagesToRelative(node)
+  // fmImagesToRelative(node)
 
   if (node.internal.type === `MarkdownRemark`) {
     const value = createFilePath({ node, getNode });
@@ -51,13 +51,13 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
   // If no errors, then we can generate a page for each post, passing in the slug as a path.*
   result.data.allMarkdownRemark.edges.forEach(({ node }) => {
 
-    const relImgPath = node.frontmatter.featured_image.match(/(?<=\/).*/g);
+    const relImgPath = node.frontmatter.featured_image.match(/(?<=\/).*/g)[0];
 
     createPage({
       path: node.fields.slug,
       component: blogPostTemplate,
       context: {
-        featured_image: relImgPath[0]
+        featured_image: relImgPath  // as the above regex match function 
       } // additional data can be passed via context
     });
   });
