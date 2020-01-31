@@ -1,12 +1,9 @@
 const path = require(`path`);
 const { createFilePath } = require("gatsby-source-filesystem");
-const { fmImagesToRelative } = require('gatsby-remark-relative-images');
 
 // The slug is not exposed to GraphQL by default so we need to pass it through manually.
 exports.onCreateNode = ({ node, actions, getNode }) => {
   const { createNodeField } = actions;
-
-  // fmImagesToRelative(node)
 
   if (node.internal.type === `MarkdownRemark`) {
     const value = createFilePath({ node, getNode });
@@ -23,7 +20,7 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
   const { createPage } = actions;
   const blogPostTemplate = path.resolve(`src/templates/blogTemplate.js`);
 
-  // First, we need to grab all the blogs, sorting them by date
+  // First, we need to grab all the blogs, sorting them by date and get the featured images
   const result = await graphql(`
     {
       allMarkdownRemark(
@@ -57,7 +54,7 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
       path: node.fields.slug,
       component: blogPostTemplate,
       context: {
-        featured_image: relImgPath  // as the above regex match function 
+        featured_image: relImgPath
       } // additional data can be passed via context
     });
   });
